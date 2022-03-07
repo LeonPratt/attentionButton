@@ -2,15 +2,27 @@ import socket
 from tkinter import E
 
 try:
+
     def send():
-        message_toSend = "PlaySound"
-        bytesToSend = str.encode(message_toSend)
+        message = "PlaySound"
+        TCP_IP = "192.168.1.20"
+        TCP_PORT = 8080
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((TCP_IP, TCP_PORT))
+        s.send(b'PlaySound')
+        data = s.recv(1024)
+        s.close()
+        print("recieved:", data)
 
-        ServerAdressPort = ("192.168.1.20", 8080)
-
-        UDPclientsocket = socket.socket(family = socket.AF_INET, type = socket.SOCK_DGRAM)
-
-        UDPclientsocket.sendto(bytesToSend, ServerAdressPort)
+    #def send_UDP():
+    #    message_toSend = "PlaySound"
+    #    bytesToSend = str.encode(message_toSend)
+#
+    #    ServerAdressPort = ("192.168.1.20", 8080)
+#
+    #    UDPclientsocket = socket.socket(family = socket.AF_INET, type = socket.SOCK_DGRAM)
+#
+    #    UDPclientsocket.sendto(bytesToSend, ServerAdressPort)
 
     def webserver():
         SERVER_HOST = '0.0.0.0'

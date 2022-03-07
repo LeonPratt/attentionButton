@@ -27,22 +27,38 @@ def playringtone():
 import socket
 
 
-UDPserversocket= socket.socket(family=socket.AF_INET, type = socket.SOCK_DGRAM)
+SERVER_HOST = '0.0.0.0'
+SERVER_PORT = 8080
+# Create socket
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+server_socket.bind((SERVER_HOST, SERVER_PORT))
+server_socket.listen(1)
+print('Listening on port %s ...' % SERVER_PORT)
+while True:   
+    # Wait for client connections
+    client_connection, client_address = server_socket.accept()
 
-UDPserversocket.bind(("0.0.0.0", 8080))
-
-print("socket is listening...")
-
-while True:
-    bytesAdressPair = UDPserversocket.recvfrom(1024)
-    message = bytesAdressPair[0]
-    adress = bytesAdressPair[1]
-
-    print(message, adress)
+    # Get the client request
+    request = client_connection.recv(1024).decode()
+    print("request = %s"  % request)
     
-    message = str(message).split("b",1)[1]
-    print(message)
-    if message == "'PlaySound'":
-        playringtone()	
+    if request != "":
+        playringtone()
+
+    client_connection.sendall(request.encode())
+    client_connection.close()
+
+
+    #bytesAdressPair = s.recvfrom(1024)
+    #message = bytesAdressPair[0]
+    #adress = bytesAdressPair[1]
+#
+    #print(message, adress)
+    #
+    #message = str(message).split("b",1)[1]
+    #print(message)
+    #if message == "'PlaySound'":
+    #    playringtone()	
 
 
