@@ -1,5 +1,5 @@
 import socket
-from tkinter import E
+
 
 try:
 
