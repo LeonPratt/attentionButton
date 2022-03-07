@@ -1,15 +1,20 @@
 import simpleaudio as sa
 from tkinter import *
 
+
+#print("C:Usersleona\\attention_button_startup\discord_ringtone.wav")
+
 def playringtone():
-    filename = 'discord_ringtone.wav'
-    wave_obj = sa.WaveObject.from_wave_file(filename)
-    play_obj = wave_obj.play()
+    soundstopped = False
+    filename = r"C:\Users\leona\attention_button_startup\discord_ringtone.wav"
+    wave_obj = sa.WaveObject.from_wave_file(str(filename))
 
+    playobj = wave_obj.play()
+        
     def stopsound():
-        play_obj.stop()
-	top.destroy()
-
+        playobj.stop()
+        top.destroy()
+        soundstopped = True
     top = Tk()
     top.geometry("500x300")
     b = Button(top, text = "stop", command = stopsound)
