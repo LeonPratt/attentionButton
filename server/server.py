@@ -5,11 +5,12 @@ try:
 
     def send():
         message = "PlaySound"
+        
         TCP_IP = "192.168.1.20"
         TCP_PORT = 8080
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((TCP_IP, TCP_PORT))
-        s.send(b'PlaySound')
+        s.send(b'PlaySound' )
         data = s.recv(1024)
         s.close()
         print("recieved:", data)
@@ -56,9 +57,10 @@ try:
 
     print ("send.py in main")
 
-    webserver()
+    #webserver()
 except Exception as e:
     f = open("errorlog.txt", "a")
     msg = e
     f.write(str(e))
     f.close()
+

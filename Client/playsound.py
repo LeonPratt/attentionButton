@@ -1,8 +1,12 @@
 import simpleaudio as sa
 from tkinter import *
+import tkinter as tk
 
 
 #print("C:Usersleona\\attention_button_startup\discord_ringtone.wav")
+spltrequest = ""
+
+
 
 def playringtone():
     soundstopped = False
@@ -17,7 +21,9 @@ def playringtone():
         soundstopped = True
     top = Tk()
     top.geometry("500x300")
-    b = Button(top, text = "stop", command = stopsound)
+
+    txt = "stop \n %s" %request.split(":")[1]
+    b = Button(top, text = txt , command = stopsound)
     b.pack()
     top.mainloop()
 
@@ -37,18 +43,21 @@ server_socket.listen(1)
 print('Listening on port %s ...' % SERVER_PORT)
 while True:   
     # Wait for client connections
-    client_connection, client_address = server_socket.accept()
 
+    client_connection, client_address = server_socket.accept()
+    print(client_address)
     # Get the client request
+
+
     request = client_connection.recv(1024).decode()
-    print("request = %s"  % request)
-    
-    if request != "":
+    print(request)
+    spltRequest = request.split(":")
+    print("spltrequest = ", spltRequest)
+    if spltRequest[0] == "PlaySound":
         playringtone()
 
     client_connection.sendall(request.encode())
     client_connection.close()
-
 
     #bytesAdressPair = s.recvfrom(1024)
     #message = bytesAdressPair[0]
