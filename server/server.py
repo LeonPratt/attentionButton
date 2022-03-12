@@ -3,6 +3,7 @@ import time
 
 while True:
     manage_to_send =False
+    response = ""
 
     try:
 
@@ -12,12 +13,17 @@ while True:
             TCP_IP = "192.168.1.20"
             TCP_PORT = 8080
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(3)
+
             s.connect((TCP_IP, TCP_PORT))
             s.send(message)
             data = s.recv(1024).decode()
+            s.settimeout((None))
+            
             print("recieved:", data)
             if data == "PlaySound:Kitchen(button)":
                 manage_to_send = True
+            else: managed_to_send = False
             s.close()
 
 
@@ -61,7 +67,11 @@ while True:
                 if manage_to_send:
                     response = 'HTTP/1.0 200 OK\n\nHello World'
                     client_connection.sendall(response.encode())
-                    client_connection.close()
+
+                elif manage_to_send == False:
+                    response = 'HTTP/1.0 300 Error'
+                    client_connection.sendall(response.encode())
+                client_connection.close()
 
 
         print ("send.py in main")
