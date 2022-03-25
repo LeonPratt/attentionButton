@@ -1,7 +1,7 @@
 import simpleaudio as sa
 from tkinter import *
 import tkinter as tk
-
+import threading
 
 #print("C:Usersleona\\attention_button_startup\discord_ringtone.wav")
 spltrequest = ""
@@ -54,9 +54,11 @@ while True:
     spltRequest = request.split(":")
     print("spltrequest = ", spltRequest)
     if spltRequest[0] == "PlaySound":
-        playringtone()
+        client_connection.sendall(request.encode())
+        playingsound = threading.Thread(target=playringtone)
+        playingsound.start()
 
-    client_connection.sendall(request.encode())
+
     client_connection.close()
 
     #bytesAdressPair = s.recvfrom(1024)
@@ -69,5 +71,8 @@ while True:
     #print(message)
     #if message == "'PlaySound'":
     #    playringtone()	
+
+
+
 
 
