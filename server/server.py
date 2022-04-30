@@ -1,6 +1,17 @@
 import socket
 import time
+import pdpyras
+import os
+from decouple import config
 
+Key = config('APIKEY')
+RoutingKey = config('RoutingKEY')
+
+
+global API_session
+global event_session
+event_session = pdpyras.EventsAPISession(RoutingKey)
+API_session = pdpyras.APISession(Key)
 while True:
     manage_to_send =False
     response = ""
@@ -8,8 +19,12 @@ while True:
     try:
 
         def send():
+
+            event_key = event_session.trigger("Leon", "attention-button")
+            print(event_key)
+
             room = b"Kitchen(button)"
-            message = b"PlaySound:" + room
+            message = b"PlaySound:" + room +b":"+ event_key
             TCP_IP = "192.168.1.20"
             TCP_PORT = 8080
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -46,12 +61,12 @@ while True:
             server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             server_socket.bind((SERVER_HOST, SERVER_PORT))
             server_socket.listen(1)
-            print('Listening on port %s ...' % SERVER_PORT)
+            #print('Listening on port %s ...' % SERVER_PORT)
 
             while True:   
                 # Wait for client connections
                 client_connection, client_address = server_socket.accept()
-                
+
 
                 # Get the client request
                 request = client_connection.recv(1024).decode()
@@ -60,11 +75,13 @@ while True:
                 Spltrequest =Spltrequest.split("/")[1]
                 print(Spltrequest)
                 if Spltrequest == "single HTTP":
+                    print("sending")
                     send()
                 
-
+                myevents=API_session.list_all('/incidents',params={'statuses[]':['triggered']})
+                #print(myevents)
                 # Send HTTP response
-                if manage_to_send:
+                if manage_to_send or len(myevents) == 0:
                     response = 'HTTP/1.0 200 OK\n\nHello World'
                     client_connection.sendall(response.encode())
 
@@ -74,7 +91,6 @@ while True:
                 client_connection.close()
 
 
-        print ("send.py in main")
 
         webserver()
     except Exception as e:
@@ -85,3 +101,4 @@ while True:
 
  
     time.sleep(4)
+
